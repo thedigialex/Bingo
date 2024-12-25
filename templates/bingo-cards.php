@@ -7,8 +7,8 @@ get_header();
 <div class="bingo-content">
     <div class="bingo-header">
         <h1>All Bingo Cards</h1>
-        <a href="/create-card" class="bingo-button">
-            Create New
+        <a href="/bingo/create-card" class="bingo-button">
+            New
         </a>
     </div>
     <h2 style="margin-right:20px; margin-left:20px;">Your Bingo Cards</h2>

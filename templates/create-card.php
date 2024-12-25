@@ -36,24 +36,35 @@ get_header();
         <?php wp_nonce_field('create_bingo_card', 'bingo_nonce'); ?>
 
         <div>
-            <label for="bingo_card_title"><strong>Bingo Card Title:</strong></label>
+            <h3>Bingo Card Title:</h3>
             <input type="text" name="bingo_card_title" id="bingo_card_title" class="regular-text" required>
         </div>
 
+        <br>
         <h3>Bingo Slots</h3>
         <p>Enter the 25 values for the bingo card slots:</p>
+
+        <button class="accordion" style="width: 100%;">Tips for Bingo Slots</button>
+        <div class="panel" style="display: none;">
+            <p>Achieving a big, ambitious goal can feel overwhelming, but breaking it down into smaller, manageable tasks makes the journey more achievable. By focusing on one step at a time, you'll build momentum and make steady progress toward reaching your ultimate objective, no matter how challenging it may seem.</p>
+            <p><strong>Goal:</strong> 'Be More Active'</p>
+            <ul>
+                <li>Go on a hike</li>
+                <li>Go on a hike 5 times</li>
+                <li>Go on a hike 10 times</li>
+            </ul>
+        </div>
+
         <table>
-            <?php for ($i = 0; $i < 5; $i++): ?>
+            <?php for ($i = 0; $i < 25; $i++): ?>
                 <tr>
-                    <?php for ($j = 0; $j < 5; $j++): ?>
-                        <td>
-                            <input
-                                type="text"
-                                name="bingo_slots[]"
-                                placeholder="Slot <?php echo ($i * 5) + $j + 1; ?>"
-                                required>
-                        </td>
-                    <?php endfor; ?>
+                    <td>
+                        <input
+                            type="text"
+                            name="bingo_slots[]"
+                            placeholder="Slot <?php echo $i + 1; ?>"
+                            required>
+                    </td>
                 </tr>
             <?php endfor; ?>
         </table>
@@ -81,4 +92,20 @@ get_header();
     </form>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var acc = document.getElementsByClassName("accordion");
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    });
+</script>
 <?php get_footer(); ?>

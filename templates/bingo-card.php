@@ -66,7 +66,7 @@ if ($bingo_card->have_posts()): $bingo_card->the_post();
         }
         ?>
         <div style="text-align: center; margin-top: 20px;">
-            <a href="/bingo/bingo-card" class="bingo-button">Go to Bingo Card</a>
+            <a href="/bingo/bingo-card" class="bingo-button">Go to Bingo Cards</a>
         </div>
         <br>
     </div>
