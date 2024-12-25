@@ -77,6 +77,7 @@ function bingo_template_include($template)
     return $template;
 }
 add_filter('template_include', 'bingo_template_include');
+
 function bingo_save_slot_status()
 {
     // Validate required POST parameters
@@ -98,70 +99,109 @@ function bingo_save_slot_status()
     $bingo_slots_status[$slot_index] = $is_completed;
     update_post_meta($post_id, 'bingo_slots_status', $bingo_slots_status);
 
-    // Check if there is a bingo
-    if (check_for_bingo($bingo_slots_status)) {
-        // Retrieve available rewards
+    if (!empty($bingo_conditions = check_for_bingo($bingo_slots_status, $slot_index))) {
+        // Retrieve rewards and claimed status
         $rewards = get_post_meta($post_id, 'bingo_rewards', true);
         if (!is_array($rewards)) {
-            $rewards = []; // Initialize empty rewards array if none exists
+            $rewards = [];
         }
 
-        // Retrieve or initialize rewards claimed
         $rewards_claimed = get_post_meta($post_id, 'bingo_rewards_claimed', true);
         if (!is_array($rewards_claimed)) {
-            $rewards_claimed = array_fill(0, count($rewards), 0); // Match the rewards array size
+            $rewards_claimed = array_fill(0, count($rewards), 0);
         }
-
-        // Ensure rewards_claimed matches the rewards array length
         $rewards_claimed = array_pad($rewards_claimed, count($rewards), 0);
 
-        // Find an unclaimed reward
-        $reward_index = array_search(0, $rewards_claimed);
-        if ($reward_index !== false && isset($rewards[$reward_index])) {
-            $rewards_claimed[$reward_index] = 1;
-            update_post_meta($post_id, 'bingo_rewards_claimed', $rewards_claimed);
+        $claimed_rewards = [];
 
+        // Claim a reward for each bingo achieved
+        foreach ($bingo_conditions as $condition) {
+            $reward_index = array_search(0, $rewards_claimed);
+            if ($reward_index !== false && isset($rewards[$reward_index])) {
+                $rewards_claimed[$reward_index] = 1;
+                $claimed_rewards[] = $rewards[$reward_index];
+            }
+        }
+
+        update_post_meta($post_id, 'bingo_rewards_claimed', $rewards_claimed);
+
+        if (!empty($claimed_rewards)) {
             wp_send_json_success([
-                'message' => 'Bingo achieved! Reward claimed: ' . esc_html($rewards[$reward_index]),
-                'reward' => $rewards[$reward_index],
-                'reload' => true 
+                'message' => 'Bingo achieved! Rewards claimed: ' . implode(', ', array_map('esc_html', $claimed_rewards)),
+                'rewards' => $claimed_rewards,
+                'reload' => true,
             ]);
         } else {
             wp_send_json_success([
                 'message' => 'Bingo achieved! But no rewards available.',
-                'reload' => false
+                'reload' => false,
             ]);
         }
     }
+
 
     wp_send_json_success(['message' => 'Slot status updated.']);
 }
 add_action('wp_ajax_save_bingo_slot_status', 'bingo_save_slot_status');
 
-function check_for_bingo($bingo_slots_status)
+function check_for_bingo($bingo_slots_status, $slot_index)
 {
     $grid_size = 5;
-    $rows = $columns = array_fill(0, $grid_size, 0);
-    $diagonal1 = $diagonal2 = 0;
+    $row = intdiv($slot_index, $grid_size); // Row of the updated slot
+    $column = $slot_index % $grid_size;    // Column of the updated slot
 
+    $bingo_conditions = [];
+
+    // Check the updated row
+    $row_bingo = true;
+    for ($j = 0; $j < $grid_size; $j++) {
+        if (!$bingo_slots_status[$row * $grid_size + $j]) {
+            $row_bingo = false;
+            break;
+        }
+    }
+    if ($row_bingo) {
+        $bingo_conditions[] = "row-$row";
+    }
+
+    // Check the updated column
+    $column_bingo = true;
     for ($i = 0; $i < $grid_size; $i++) {
-        for ($j = 0; $j < $grid_size; $j++) {
-            $index = $i * $grid_size + $j;
-            if ($bingo_slots_status[$index]) {
-                $rows[$i]++;
-                $columns[$j]++;
-                if ($i == $j) {
-                    $diagonal1++;
-                }
-                if ($i + $j == $grid_size - 1) {
-                    $diagonal2++;
-                }
+        if (!$bingo_slots_status[$i * $grid_size + $column]) {
+            $column_bingo = false;
+            break;
+        }
+    }
+    if ($column_bingo) {
+        $bingo_conditions[] = "column-$column";
+    }
+
+    // Check the main diagonal (if applicable)
+    $diagonal1_bingo = true;
+    if ($row == $column) {
+        for ($i = 0; $i < $grid_size; $i++) {
+            if (!$bingo_slots_status[$i * $grid_size + $i]) {
+                $diagonal1_bingo = false;
+                break;
             }
+        }
+        if ($diagonal1_bingo) {
+            $bingo_conditions[] = "diagonal-1";
         }
     }
 
-    if (in_array($grid_size, $rows) || in_array($grid_size, $columns) || $diagonal1 == $grid_size || $diagonal2 == $grid_size) {
-        return true;
+    $diagonal2_bingo = true;
+    if ($row + $column == $grid_size - 1) {
+        for ($i = 0; $i < $grid_size; $i++) {
+            if (!$bingo_slots_status[$i * $grid_size + ($grid_size - 1 - $i)]) {
+                $diagonal2_bingo = false;
+                break;
+            }
+        }
+        if ($diagonal2_bingo) {
+            $bingo_conditions[] = "diagonal-2";
+        }
     }
-    return false;
+
+    return $bingo_conditions; // Return all bingos achieved
 }

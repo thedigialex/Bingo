@@ -1,5 +1,5 @@
 <?php
-if (!defined('ABSPATH')) exit; 
+if (!defined('ABSPATH')) exit;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bingo_nonce']) && wp_verify_nonce($_POST['bingo_nonce'], 'create_bingo_card')) {
     $title = sanitize_text_field($_POST['bingo_card_title']);
@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bingo_nonce']) && wp_
     $rewards = array_map('sanitize_text_field', $_POST['bingo_rewards']);
 
     shuffle($slots);
-	shuffle($rewards);
+    shuffle($rewards);
 
     $post_id = wp_insert_post([
         'post_title' => $title,
@@ -28,8 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bingo_nonce']) && wp_
 get_header();
 ?>
 
-<div class="wrap">
-    <h1>Create a Bingo Card</h1>
+<div class="bingo-content">
+    <div class="bingo-header">
+        <h1>Create a Bingo Card</h1>
+    </div>
     <form method="post">
         <?php wp_nonce_field('create_bingo_card', 'bingo_nonce'); ?>
 
@@ -72,8 +74,10 @@ get_header();
             <?php endfor; ?>
         </table>
 
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" class="bingo-card">Create Bingo Card</button>
+        </div>
         <br>
-        <button type="submit" class="button button-primary">Create Bingo Card</button>
     </form>
 </div>
 
