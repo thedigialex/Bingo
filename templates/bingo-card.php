@@ -45,6 +45,8 @@ if ($bingo_card->have_posts()): $bingo_card->the_post();
             }
             ?>
         </table>
+    </div>
+    <div class="bingo-content">
         <?php
         if ($bingo_rewards) {
             echo '<br><h3 style="text-align: center;">Rewards</h3><br>';

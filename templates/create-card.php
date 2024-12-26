@@ -19,7 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bingo_nonce']) && wp_
         update_post_meta($post_id, 'bingo_slots', $slots);
         update_post_meta($post_id, 'bingo_rewards', $rewards);
 
-        echo '<div class="notice notice-success"><p>Bingo Card created successfully!</p></div>';
+        wp_redirect('/bingo/bingo-card');
+        exit;
     } else {
         echo '<div class="notice notice-error"><p>Failed to create Bingo Card.</p></div>';
     }
@@ -44,7 +45,7 @@ get_header();
         <h3>Bingo Slots</h3>
         <p>Enter the 25 values for the bingo card slots:</p>
 
-        <button class="accordion" style="width: 100%;">Tips for Bingo Slots</button>
+        <button class="accordion bingo-button" style="width: 100%;">Tips for Bingo Slots</button>
         <div class="panel" style="display: none;">
             <p>Achieving a big, ambitious goal can feel overwhelming, but breaking it down into smaller, manageable tasks makes the journey more achievable. By focusing on one step at a time, you'll build momentum and make steady progress toward reaching your ultimate objective, no matter how challenging it may seem.</p>
             <p><strong>Goal:</strong> 'Be More Active'</p>
@@ -86,7 +87,7 @@ get_header();
         </table>
 
         <div style="text-align: center; margin-top: 20px;">
-            <button type="submit" class="bingo-card">Create Bingo Card</button>
+            <button type="submit" class="bingo-button">Create Bingo Card</button>
         </div>
         <br>
     </form>

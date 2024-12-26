@@ -10,6 +10,8 @@
 .bingo-content {
 	width: 100%;
 	margin-bottom: 20px;
+	overflow-x: auto;
+    overflow-y: hidden; 
 }
 
 .rewards-container {
@@ -34,9 +36,9 @@
 }
 
 .reward-card.claimed {
-    background-color: #d4edda;
-    border: 1px solid #c3e6cb;
-    color: #155724;
+    background-color: #B3D4B4;
+    border: 1px solid #528F55;
+    color: #528F55;
 }
 
 .reward-icon {
@@ -45,7 +47,7 @@
 
 .reward-card.unclaimed {
     background-color: #ffeeba;
-    border: 1px solid #f5c6cb;
+    border: 1px solid #d39e00;
     color: #856404;
     display: flex;
     align-items: center;
@@ -66,7 +68,7 @@
     border-collapse: separate;
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid #f5c6cb;
+    border: 1px solid #EFEFEF;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -77,13 +79,13 @@
     padding: 10px;
     text-align: center;
     cursor: pointer;
-    border: 1px solid #f5c6cb;
+    border: 1px solid #EFEFEF;
     background-color: #f9f9f9;
 }
 
 .bingo-cell.completed {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #B3D4B4;
+    color: #528F55;
 }
 
 .bingo-cell {
@@ -103,7 +105,7 @@
 }
 
 .bingo-card-item {
-    background-color: #fff;
+    background-color: #FAFAFA;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -124,7 +126,7 @@
 
 .bingo-card-icon {
     font-size: 40px;
-    color: #0073aa;
+    color: #528F55;
     margin-bottom: 15px;
 }
 
@@ -135,14 +137,18 @@
 }
 
 .bingo-card-item:hover .bingo-card-icon {
-    color: #005f8a;
+    color: #6AAA6D;
 }
 
 .bingo-button {
     padding: 15px 30px;
     font-size: 16px;
-    background-color: #0073aa;
-    color: white;
+    background-color: #528F55;
+    color: #FAFAFA;
     text-decoration: none;
     border-radius: 5px;
+}
+.bingo-button:hover {
+    background-color: #6AAA6D;
+    color: #333333;
 }
