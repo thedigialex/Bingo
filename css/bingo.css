@@ -152,3 +152,8 @@
     background-color: #6AAA6D;
     color: #333333;
 }
+.bingo-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+}
